@@ -3,119 +3,225 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tic-Tac-Toe</title>
+  <title>Ultimate Tic-Tac-Toe</title>
   <style>
     :root {
-      --bg: #f0f4f8;
-      --card-bg: #ffffff;
-      --text: #0f172a;
+      --bg-1: #f5f7ff;
+      --bg-2: #eaf4ff;
+      --card-bg: rgba(255, 255, 255, 0.82);
+      --panel: rgba(148, 163, 184, 0.08);
+      --text: #111827;
       --muted: #475569;
-      --panel: #f8fafc;
-      --border: #cbd5e1;
-      --button-bg: #0f172a;
-      --button-text: #ffffff;
+      --border: rgba(148, 163, 184, 0.38);
+      --button-bg: #111827;
+      --button-text: #f8fafc;
       --player-x: #2563eb;
-      --player-o: #dc2626;
-      --win-bg: #dcfce7;
+      --player-o: #ef4444;
+      --x-soft: rgba(37, 99, 235, 0.12);
+      --o-soft: rgba(239, 68, 68, 0.12);
+      --win-bg: rgba(34, 197, 94, 0.18);
       --win-border: #22c55e;
-      --win-text: #15803d;
-      --shadow: rgba(15, 23, 42, 0.12);
+      --win-text: #166534;
+      --shadow: rgba(15, 23, 42, 0.14);
+      --ring: rgba(99, 102, 241, 0.18);
+      --glow: rgba(59, 130, 246, 0.22);
     }
 
     body[data-theme="dark"] {
-      --bg: #0b0f19;
-      --card-bg: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --panel: #1f2937;
-      --border: #374151;
-      --button-bg: #e5e7eb;
-      --button-text: #0f172a;
-      --player-x: #60a5fa;
-      --player-o: #f87171;
-      --win-bg: #052e16;
+      --bg-1: #0b1020;
+      --bg-2: #111827;
+      --card-bg: rgba(17, 24, 39, 0.82);
+      --panel: rgba(148, 163, 184, 0.08);
+      --text: #e5eefb;
+      --muted: #a5b4cf;
+      --border: rgba(148, 163, 184, 0.22);
+      --button-bg: #e2e8f0;
+      --button-text: #0b1020;
+      --player-x: #7cc7ff;
+      --player-o: #ff7d7d;
+      --x-soft: rgba(124, 199, 255, 0.12);
+      --o-soft: rgba(255, 125, 125, 0.12);
+      --win-bg: rgba(34, 197, 94, 0.13);
       --win-border: #34d399;
       --win-text: #bbf7d0;
       --shadow: rgba(0, 0, 0, 0.35);
+      --ring: rgba(148, 163, 184, 0.12);
+      --glow: rgba(99, 102, 241, 0.26);
     }
 
     body[data-theme="neon"] {
-      --bg: #05050f;
-      --card-bg: #0f0f23;
-      --text: #e2e8f0;
-      --muted: #a5b4fc;
-      --panel: #121a35;
-      --border: #2d3b6d;
-      --button-bg: #00f0ff;
-      --button-text: #05050f;
-      --player-x: #00f0ff;
-      --player-o: #ff0077;
-      --win-bg: #071f12;
-      --win-border: #00ff88;
-      --win-text: #b7ffd6;
-      --shadow: rgba(0, 240, 255, 0.25);
+      --bg-1: #070b14;
+      --bg-2: #101827;
+      --card-bg: rgba(9, 13, 24, 0.78);
+      --panel: rgba(15, 23, 42, 0.9);
+      --text: #e6f7ff;
+      --muted: #a9d3ff;
+      --border: rgba(30, 144, 255, 0.32);
+      --button-bg: #00e5ff;
+      --button-text: #04141d;
+      --player-x: #00e5ff;
+      --player-o: #ff4fd8;
+      --x-soft: rgba(0, 229, 255, 0.12);
+      --o-soft: rgba(255, 79, 216, 0.12);
+      --win-bg: rgba(34, 197, 94, 0.14);
+      --win-border: #52f0a5;
+      --win-text: #b8ffe3;
+      --shadow: rgba(0, 229, 255, 0.18);
+      --ring: rgba(0, 229, 255, 0.18);
+      --glow: rgba(255, 79, 216, 0.22);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html, body {
       margin: 0;
       min-height: 100%;
       height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
       color: var(--text);
-      transition: background 0.2s ease, color 0.2s ease;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     body {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient::before,
+    .ambient::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.45;
+    }
+
+    .ambient::before {
+      background: rgba(59, 130, 246, 0.18);
+      top: -100px;
+      left: -80px;
+    }
+
+    .ambient::after {
+      background: rgba(168, 85, 247, 0.18);
+      right: -60px;
+      bottom: -90px;
     }
 
     .game-card {
-      width: min(360px, 92vw);
+      position: relative;
+      z-index: 1;
+      width: min(430px, 92vw);
       background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 12px 32px var(--shadow);
-      padding: 20px;
+      border-radius: 28px;
+      box-shadow: 0 24px 50px var(--shadow);
+      padding: 22px 20px 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
+    .title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tag {
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.08);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
     }
 
     h2 {
-      margin: 0 0 14px;
-      text-align: center;
-      font-size: 1.8rem;
+      margin: 0;
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .theme-switch {
+      display: flex;
+      padding: 4px;
+      border-radius: 999px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+
+    .theme-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 7px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 52px;
+    }
+
+    .theme-btn.active {
+      background: var(--button-bg);
+      color: var(--button-text);
+      box-shadow: 0 8px 18px var(--glow);
     }
 
     .mode-toggle {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 15px;
     }
 
-    .mode-btn, .theme-btn, .action-btn {
+    .mode-btn {
+      padding: 11px 16px;
       border: 1px solid var(--border);
-      background: var(--panel);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.14);
       color: var(--text);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-weight: bold;
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease, background 0.2s ease;
-    }
-
-    .mode-btn:hover, .theme-btn:hover, .action-btn:hover {
-      transform: translateY(-1px);
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
     }
 
     .mode-btn.active {
-      background: var(--button-bg);
+      background: linear-gradient(135deg, var(--button-bg), rgba(99, 102, 241, 0.82));
       color: var(--button-text);
-      border-color: var(--button-bg);
+      border-color: transparent;
+      box-shadow: 0 16px 25px var(--ring);
     }
 
     .scoreboard {
@@ -124,101 +230,178 @@
       gap: 8px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 18px;
       padding: 10px;
       margin-bottom: 14px;
-      font-weight: bold;
-      font-size: 0.95rem;
     }
 
-    .scoreboard div {
-      text-align: center;
+    .score-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 6px;
+      min-height: 72px;
+    }
+
+    .label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       color: var(--muted);
+      font-weight: 800;
     }
 
-    .scoreboard strong {
-      color: var(--text);
-      display: block;
-      margin-top: 3px;
-      font-size: 1.1rem;
+    .score-value {
+      margin-top: 6px;
+      font-weight: 900;
+      font-size: clamp(1.25rem, 3vw, 1.6rem);
     }
 
     .status {
       text-align: center;
-      font-size: 1.05rem;
-      font-weight: bold;
-      margin-bottom: 14px;
-      min-height: 24px;
+      font-weight: 800;
+      font-size: 1rem;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .board-wrap {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 22px;
+      padding: 12px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 14px;
+      gap: 10px;
     }
 
     .cell {
+      position: relative;
       aspect-ratio: 1;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
       color: var(--text);
-      font-size: clamp(2rem, 8vw, 3rem);
-      font-weight: bold;
       cursor: pointer;
-      transition: background 0.15s ease, transform 0.1s ease;
+      font-size: clamp(2.2rem, 9vw, 3rem);
+      font-weight: 900;
+      transition: all 0.18s ease;
+      user-select: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
     }
 
     .cell:hover:not(:disabled) {
-      background: var(--panel);
-      transform: translateY(-1px);
+      transform: translateY(-1px) scale(1.01);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 12px 18px rgba(99, 102, 241, 0.08);
     }
 
     .cell:disabled {
       cursor: default;
     }
 
-    .cell.x { color: var(--player-x); }
-    .cell.o { color: var(--player-o); }
+    .cell.x {
+      background: var(--x-soft);
+      color: var(--player-x);
+    }
+
+    .cell.o {
+      background: var(--o-soft);
+      color: var(--player-o);
+    }
 
     .cell.win-cell {
       background: var(--win-bg);
       border-color: var(--win-border);
       color: var(--win-text);
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.16);
     }
 
     .controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .action-btn {
-      width: 100%;
-      background: var(--button-bg);
-      color: var(--button-text);
-      border-color: var(--button-bg);
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
     }
 
-    .theme-toggle {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 8px;
+    .action-btn:hover {
+      transform: translateY(-1px);
     }
 
-    .theme-btn.active {
-      background: var(--button-bg);
+    .action-btn.primary {
+      background: linear-gradient(135deg, var(--button-bg), rgba(99, 102, 241, 0.9));
       color: var(--button-text);
-      border-color: var(--button-bg);
+    }
+
+    .action-btn.secondary {
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 18px;
+      }
+
+      .game-card {
+        padding: 18px 14px 16px;
+        border-radius: 24px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .theme-switch {
+        width: 100%;
+      }
+
+      .theme-btn {
+        flex: 1;
+      }
     }
   </style>
 </head>
 <body data-theme="light">
+  <div class="ambient"></div>
+
   <div class="game-card">
-    <h2>Tic-Tac-Toe</h2>
+    <div class="topbar">
+      <div class="title-wrap">
+        <span class="tag">Classic Game</span>
+        <h2>Tic-Tac-Toe</h2>
+      </div>
+
+      <div class="theme-switch">
+        <button class="theme-btn active" data-theme="light" aria-label="Light theme">Light</button>
+        <button class="theme-btn" data-theme="dark" aria-label="Dark theme">Dark</button>
+        <button class="theme-btn" data-theme="neon" aria-label="Neon theme">Neon</button>
+      </div>
+    </div>
 
     <div class="mode-toggle">
       <button id="pvpBtn" class="mode-btn active">2 Players</button>
@@ -226,43 +409,39 @@
     </div>
 
     <div class="scoreboard">
-      <div>
-        X
-        <strong id="scoreX">0</strong>
+      <div class="score-box">
+        <span class="label">X</span>
+        <span id="scoreX" class="score-value">0</span>
       </div>
-      <div>
-        Ties
-        <strong id="scoreTies">0</strong>
+      <div class="score-box">
+        <span class="label">Ties</span>
+        <span id="scoreTies" class="score-value">0</span>
       </div>
-      <div>
-        <span id="labelO">O</span>
-        <strong id="scoreO">0</strong>
+      <div class="score-box">
+        <span class="label" id="labelO">O</span>
+        <span id="scoreO" class="score-value">0</span>
       </div>
     </div>
 
     <div id="status" class="status">Turn: Player X</div>
 
-    <div id="board" class="board" aria-label="Tic-Tac-Toe board">
-      <button class="cell" data-index="0" aria-label="Cell 1"></button>
-      <button class="cell" data-index="1" aria-label="Cell 2"></button>
-      <button class="cell" data-index="2" aria-label="Cell 3"></button>
-      <button class="cell" data-index="3" aria-label="Cell 4"></button>
-      <button class="cell" data-index="4" aria-label="Cell 5"></button>
-      <button class="cell" data-index="5" aria-label="Cell 6"></button>
-      <button class="cell" data-index="6" aria-label="Cell 7"></button>
-      <button class="cell" data-index="7" aria-label="Cell 8"></button>
-      <button class="cell" data-index="8" aria-label="Cell 9"></button>
+    <div class="board-wrap">
+      <div id="board" class="board" aria-label="Tic-Tac-Toe board">
+        <button class="cell" data-index="0" aria-label="Cell 1"></button>
+        <button class="cell" data-index="1" aria-label="Cell 2"></button>
+        <button class="cell" data-index="2" aria-label="Cell 3"></button>
+        <button class="cell" data-index="3" aria-label="Cell 4"></button>
+        <button class="cell" data-index="4" aria-label="Cell 5"></button>
+        <button class="cell" data-index="5" aria-label="Cell 6"></button>
+        <button class="cell" data-index="6" aria-label="Cell 7"></button>
+        <button class="cell" data-index="7" aria-label="Cell 8"></button>
+        <button class="cell" data-index="8" aria-label="Cell 9"></button>
+      </div>
     </div>
 
     <div class="controls">
-      <button id="restartBtn" class="action-btn">Restart</button>
-      <button id="undoBtn" class="action-btn">Undo</button>
-    </div>
-
-    <div class="theme-toggle">
-      <button class="theme-btn active" data-theme="light">Light</button>
-      <button class="theme-btn" data-theme="dark">Dark</button>
-      <button class="theme-btn" data-theme="neon">Neon</button>
+      <button id="restartBtn" class="action-btn primary">Restart</button>
+      <button id="undoBtn" class="action-btn secondary">Undo</button>
     </div>
   </div>
 
@@ -306,10 +485,10 @@
     function getAudioContext() {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return null;
-      if (!window.__ticTacToeAudioCtx) {
-        window.__ticTacToeAudioCtx = new AudioCtx();
+      if (!window.__tttAudioCtx) {
+        window.__tttAudioCtx = new AudioCtx();
       }
-      return window.__ticTacToeAudioCtx;
+      return window.__tttAudioCtx;
     }
 
     function playTone(freq, type, duration = 0.12) {
@@ -319,16 +498,13 @@
 
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
       osc.type = type || 'sine';
       osc.frequency.setValueAtTime(freq, ctx.currentTime);
       gain.gain.setValueAtTime(0.0001, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-
       osc.connect(gain);
       gain.connect(ctx.destination);
-
       osc.start();
       osc.stop(ctx.currentTime + duration);
     }
@@ -375,7 +551,6 @@
 
     function minimax(board, depth, isMaximizing) {
       const score = evaluateBoard(board);
-
       if (score === 10) return score - depth;
       if (score === -10) return score + depth;
       if (!board.includes('')) return 0;
@@ -391,18 +566,18 @@
           }
         }
         return bestScore;
-      } else {
-        let bestScore = Infinity;
-        for (let i = 0; i < board.length; i++) {
-          if (board[i] === '') {
-            board[i] = 'X';
-            const currentScore = minimax(board, depth + 1, true);
-            board[i] = '';
-            bestScore = Math.min(bestScore, currentScore);
-          }
-        }
-        return bestScore;
       }
+
+      let bestScore = Infinity;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === '') {
+          board[i] = 'X';
+          const currentScore = minimax(board, depth + 1, true);
+          board[i] = '';
+          bestScore = Math.min(bestScore, currentScore);
+        }
+      }
+      return bestScore;
     }
 
     function findBestMove() {
@@ -414,7 +589,6 @@
           boardState[i] = 'O';
           const score = minimax(boardState, 0, false);
           boardState[i] = '';
-
           if (score > bestScore) {
             bestScore = score;
             bestMove = i;
@@ -426,7 +600,6 @@
         const emptyIndices = boardState
           .map((v, idx) => (v === '' ? idx : null))
           .filter(v => v !== null);
-
         return emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
       }
 
@@ -454,11 +627,7 @@
         statusText.textContent = isAiMode ? 'Computer Wins! 🎉' : 'Player O Wins! 🎉';
       }
 
-      const combo = findWinningCombo();
-      combo.forEach(index => {
-        cells[index].classList.add('win-cell');
-      });
-
+      findWinningCombo().forEach(index => cells[index].classList.add('win-cell'));
       renderScores();
     }
 
@@ -479,13 +648,9 @@
       }
 
       currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-
-      if (isAiMode && currentPlayer === 'O') {
-        statusText.textContent = 'Turn: Computer';
-      } else {
-        statusText.textContent = `Turn: Player ${currentPlayer}`;
-      }
-
+      statusText.textContent = isAiMode && currentPlayer === 'O'
+        ? 'Turn: Computer'
+        : `Turn: Player ${currentPlayer}`;
       return false;
     }
 
@@ -501,7 +666,6 @@
       cell.classList.add(player === 'X' ? 'x' : 'o');
       cell.disabled = true;
       playTone(player === 'X' ? 440 : 220, 'sine', 0.12);
-
       return true;
     }
 
@@ -533,12 +697,10 @@
     cells.forEach(cell => {
       cell.addEventListener('click', () => {
         const index = Number(cell.dataset.index);
-
         if (!gameActive || boardState[index] !== '' || isAiThinking) return;
 
         if (makeMove(index, currentPlayer)) {
           const gameOver = handleBoardComplete();
-
           if (!gameOver && isAiMode && currentPlayer === 'O') {
             computerMove();
           }
@@ -570,7 +732,9 @@
 
       gameActive = true;
       currentPlayer = (moveHistory.length % 2 === 0) ? 'X' : 'O';
-      statusText.textContent = isAiMode && currentPlayer === 'O' ? 'Turn: Computer' : `Turn: Player ${currentPlayer}`;
+      statusText.textContent = isAiMode && currentPlayer === 'O'
+        ? 'Turn: Computer'
+        : `Turn: Player ${currentPlayer}`;
     });
 
     pvpBtn.addEventListener('click', () => {
@@ -593,10 +757,7 @@
       button.addEventListener('click', () => {
         const selectedTheme = button.dataset.theme;
         document.body.setAttribute('data-theme', selectedTheme);
-
-        themeButtons.forEach(btn => {
-          btn.classList.toggle('active', btn === button);
-        });
+        themeButtons.forEach(btn => btn.classList.toggle('active', btn === button));
       });
     });
 
